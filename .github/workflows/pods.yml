@@ -66,9 +66,9 @@ jobs:
                   npm install
 
             - name: Setup FFmpeg
-              uses: FedericoCarboni/setup-ffmpeg@v2
+              uses: FedericoCarboni/setup-ffmpeg@v3
 
-            - name: Run test script
+            - name: Run pod
               timeout-minutes: 60
               env:
                   CONFIG: ${{ secrets.CONFIG }}
