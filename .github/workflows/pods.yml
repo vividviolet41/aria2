@@ -50,13 +50,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   repository: viper-adnan/lemonic-crawler
                   token: ${{ secrets.TOKEN }}
 
             - name: Setup Node.js
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               id: setup-node
               with:
                   cache: npm
