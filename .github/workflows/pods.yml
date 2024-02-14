@@ -55,4 +55,4 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Run pod
-              run: docker run -t -e CONFIG_URL='${{ secrets.CONFIG_URL }}' ${{ env.IMAGE_NAME }}
+              run: docker run -tq -e CONFIG_URL='${{ secrets.CONFIG_URL }}' ${{ env.IMAGE_NAME }}
