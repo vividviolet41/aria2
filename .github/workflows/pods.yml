@@ -1,6 +1,10 @@
 name: Pods
 
 on:
+    push:
+        branches:
+            - main
+            - master
     workflow_dispatch:
         inputs:
             pods:
@@ -8,9 +12,6 @@ on:
                 description: Number of pods to use
                 required: true
                 default: 1
-
-env:
-    DEBUG: ${{ vars.DEBUG }}
 
 jobs:
     pre:
@@ -21,7 +22,7 @@ jobs:
             - name: Set pods count
               id: set-pods
               run: |
-                  num=${{ inputs.pods }}
+                  num=${{ inputs.pods || 1 }}
 
                   if ! [[ $num =~ ^[0-9]+$ ]]; then
                       echo "Error: Please enter a valid positive integer."
@@ -45,33 +46,13 @@ jobs:
             fail-fast: false
             matrix:
                 pods: ${{ fromJson(needs.pre.outputs.pods) }}
+        
+        env:
+            DEBUG: ${{ vars.DEBUG }}
+            IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
 
         name: Pod
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v4
-              with:
-                  repository: viper-adnan/lemonic-crawler
-                  token: ${{ secrets.TOKEN }}
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v4
-              id: setup-node
-              with:
-                  cache: npm
-
-            - name: Install dependencies
-              run: |
-                  npm install
-
-            - name: Setup FFmpeg
-              uses: FedericoCarboni/setup-ffmpeg@v3
-
             - name: Run pod
-              timeout-minutes: 60
-              env:
-                  CONFIG: ${{ secrets.CONFIG }}
-                  NODE_OPTIONS: --openssl-legacy-provider
-              run: |
-                  npm start
+              run: docker run -t -e CONFIG_URL='${{ secrets.CONFIG_URL }}' ${{ env.IMAGE_NAME }}
